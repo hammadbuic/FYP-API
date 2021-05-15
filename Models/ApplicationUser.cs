@@ -11,5 +11,11 @@ namespace Academic_project_manager_WebAPI.Models
     {
         [Column(TypeName ="nvarchar(150)")]
         public string fullName { get; set; }
+        public string program { get; set; }
+        public string department { get; set; }
+        public int gitID { get; set; }
+        public string webURL { get; set; }
+        public DateTime createdAt { get; set; }
+
     }
 }

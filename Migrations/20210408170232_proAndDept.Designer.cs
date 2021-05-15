@@ -4,14 +4,16 @@ using Academic_project_manager_WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Academic_project_manager_WebAPI.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    partial class AuthenticationContextModelSnapshot : ModelSnapshot
+    [Migration("20210408170232_proAndDept")]
+    partial class proAndDept
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,22 +73,13 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("department")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("fullName")
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("gitID")
-                        .HasColumnType("int");
-
                     b.Property<string>("program")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("webURL")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

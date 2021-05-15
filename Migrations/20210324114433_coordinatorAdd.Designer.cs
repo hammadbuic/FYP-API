@@ -4,14 +4,16 @@ using Academic_project_manager_WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Academic_project_manager_WebAPI.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    partial class AuthenticationContextModelSnapshot : ModelSnapshot
+    [Migration("20210324114433_coordinatorAdd")]
+    partial class coordinatorAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,23 +73,8 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("department")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("fullName")
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<int>("gitID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("program")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("webURL")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -109,17 +96,18 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("section")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("supervisorId")
+                    b.Property<string>("applicationUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("program")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("supervisorId")
-                        .IsUnique()
-                        .HasFilter("[supervisorId] IS NOT NULL");
+                    b.HasIndex("applicationUserId");
 
                     b.ToTable("Coordinator");
                 });
@@ -331,6 +319,9 @@ namespace Academic_project_manager_WebAPI.Migrations
                     b.Property<int?>("groupId")
                         .HasColumnType("int");
 
+                    b.Property<string>("program")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("registrationNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -343,22 +334,28 @@ namespace Academic_project_manager_WebAPI.Migrations
                 {
                     b.HasBaseType("Academic_project_manager_WebAPI.Models.ApplicationUser");
 
+                    b.Property<string>("department")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("designation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("is_coordiantor")
                         .HasColumnType("bit");
 
+                    b.Property<string>("program")
+                        .HasColumnType("nvarchar(max)");
+
                     b.ToTable("Supervisors");
                 });
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Coordinator", b =>
                 {
-                    b.HasOne("Academic_project_manager_WebAPI.Models.Supervisor", "Supervisor")
-                        .WithOne("coordinator")
-                        .HasForeignKey("Academic_project_manager_WebAPI.Models.Coordinator", "supervisorId");
+                    b.HasOne("Academic_project_manager_WebAPI.Models.ApplicationUser", "applicationUser")
+                        .WithMany()
+                        .HasForeignKey("applicationUserId");
 
-                    b.Navigation("Supervisor");
+                    b.Navigation("applicationUser");
                 });
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Group", b =>
@@ -465,8 +462,6 @@ namespace Academic_project_manager_WebAPI.Migrations
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Supervisor", b =>
                 {
-                    b.Navigation("coordinator");
-
                     b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
