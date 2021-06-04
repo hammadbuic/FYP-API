@@ -13,7 +13,9 @@ namespace Academic_project_manager_WebAPI.Models
         public string fatherName { get; set; }
         public string address { get; set; }
         //public string program { get; set; }
-        public int? groupId { get; set; }
-        public virtual Group group { get; set; }
+        public int? GroupId { get; set; }
+        public Group Group { get; set; }
+        public int? coordinatorId { get; set; }
+        public Coordinator Coordinator { get; set; }
     }
 }

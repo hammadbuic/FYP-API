@@ -42,7 +42,7 @@ namespace Academic_project_manager_WebAPI.Controllers
         }
         //Get List of supervisors
         [HttpGet("[action]")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Coordinator")]
         public async Task<Object> getSupervisors()
         {
             //var supervisors = await _userManager.GetUsersInRoleAsync("Supervisor");
@@ -158,5 +158,104 @@ namespace Academic_project_manager_WebAPI.Controllers
             await _db.SaveChangesAsync();
             return Ok(new JsonResult("Supervisor with id: " + coordinator.supervisorId + " is added in coordinator table\n"+result));
         }
+        //Get List of students
+        [HttpGet("[action]")]
+        [Authorize(Roles = "Admin,Coordinator")]
+        public async Task<Object> getStudents()
+        {
+            //var supervisors = await _userManager.GetUsersInRoleAsync("Supervisor");
+            var students = await _db.students.ToListAsync();
+            return Ok(students);
+        }
+        //Adding a new Student
+        //localhost:5484/api/admin/insertstudent
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Admin")]
+        public async Task<Object> insertStudent([FromBody] StudentModel student)
+        {
+            string pass = "student123";
+            string role = "Student";
+            var newStudent = new StudentModel()
+            {
+                fullName = student.fullName,
+                UserName = student.UserName,
+                Email = student.Email,
+                PhoneNumber = student.PhoneNumber,
+                registrationNumber = student.registrationNumber,
+                fatherName=student.fatherName,
+                address=student.address,
+                department = student.department,
+                program = student.program,
+                gitID = student.gitID,
+                webURL = student.webURL,
+                createdAt = student.createdAt
+            };
+            try
+            {
+
+                var result = await _userManager.CreateAsync(newStudent, pass);
+                await _userManager.AddToRoleAsync(newStudent, role);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        //Updating a Student
+        //api/admin/updatestudent/id
+        [HttpPut("[action]/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> updateStudent([FromRoute] string id, [FromBody] StudentModel student)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var findStudent = _db.students.FirstOrDefault(p => p.Id == id);
+            if (findStudent == null)
+            {
+                return NotFound();
+            }
+            findStudent.fullName = student.fullName;
+            findStudent.UserName = student.UserName;
+            findStudent.Email = student.Email;
+            findStudent.PhoneNumber = student.PhoneNumber;
+            findStudent.program = student.program;
+            findStudent.registrationNumber = student.registrationNumber;
+            findStudent.fatherName = student.fatherName;
+            findStudent.address = student.address;
+            findStudent.department = student.department;
+            _db.Entry(findStudent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return Ok(new JsonResult("Student with id: " + id + "is Updated"));
+        }
+        //Deleting a Student
+        //api/admin/updatestudent/id
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> deleteStudent([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var findStudent = _db.students.FirstOrDefault(p => p.Id == id);
+            if (findStudent == null)
+            {
+                return NotFound();
+            }
+            _db.students.Remove(findStudent);
+            //deleting from coordinator table if present
+            //var findCoordinator = _db.Coordinators.FirstOrDefault(p => p.supervisorId == id);
+            //if (findCoordinator != null)
+            //{
+            //    _db.Coordinators.Remove(findCoordinator);
+
+            //}
+            await _db.SaveChangesAsync();
+            return Ok(new JsonResult("Student with id: " + id + "is Deleted"));
+        }
+        
     }
 }

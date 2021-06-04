@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.CodeAnalysis.Options;
 
 namespace Academic_project_manager_WebAPI
 {
@@ -31,7 +32,7 @@ namespace Academic_project_manager_WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //inject app settings
             services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
             services.AddControllers();

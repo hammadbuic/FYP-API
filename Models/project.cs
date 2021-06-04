@@ -12,7 +12,9 @@ namespace Academic_project_manager_WebAPI.Models
 
         public int projectId { get; set; }
         public string projectName { get; set; }
-        public int projectRef { get; set; }
+        public string projectDescription { get; set; }
+        public int groupId { get; set; }
         public Group Group { get; set; }
+        //update database
     }
 }

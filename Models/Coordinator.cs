@@ -15,5 +15,6 @@ namespace Academic_project_manager_WebAPI.Models
         public string section { get; set; }
         public string supervisorId { get; set; }
         public Supervisor Supervisor { get; set; }
+        public virtual ICollection<StudentModel> Student { get; set; }
     }
 }

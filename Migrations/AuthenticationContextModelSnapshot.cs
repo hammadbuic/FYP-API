@@ -151,15 +151,18 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("groupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("projectDescription")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("projectName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("projectRef")
-                        .HasColumnType("int");
-
                     b.HasKey("projectId");
 
-                    b.HasIndex("projectRef")
+                    b.HasIndex("groupId")
                         .IsUnique();
 
                     b.ToTable("Project");
@@ -322,19 +325,24 @@ namespace Academic_project_manager_WebAPI.Migrations
                 {
                     b.HasBaseType("Academic_project_manager_WebAPI.Models.ApplicationUser");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("coordinatorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("fatherName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("groupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("registrationNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("groupId");
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("coordinatorId");
 
                     b.ToTable("Students");
                 });
@@ -374,7 +382,7 @@ namespace Academic_project_manager_WebAPI.Migrations
                 {
                     b.HasOne("Academic_project_manager_WebAPI.Models.Group", "Group")
                         .WithOne("project")
-                        .HasForeignKey("Academic_project_manager_WebAPI.Models.project", "projectRef")
+                        .HasForeignKey("Academic_project_manager_WebAPI.Models.project", "groupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -434,17 +442,23 @@ namespace Academic_project_manager_WebAPI.Migrations
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.StudentModel", b =>
                 {
+                    b.HasOne("Academic_project_manager_WebAPI.Models.Group", "Group")
+                        .WithMany("Student")
+                        .HasForeignKey("GroupId");
+
                     b.HasOne("Academic_project_manager_WebAPI.Models.ApplicationUser", null)
                         .WithOne()
                         .HasForeignKey("Academic_project_manager_WebAPI.Models.StudentModel", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Academic_project_manager_WebAPI.Models.Group", "group")
-                        .WithMany("Students")
-                        .HasForeignKey("groupId");
+                    b.HasOne("Academic_project_manager_WebAPI.Models.Coordinator", "Coordinator")
+                        .WithMany("Student")
+                        .HasForeignKey("coordinatorId");
 
-                    b.Navigation("group");
+                    b.Navigation("Coordinator");
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Supervisor", b =>
@@ -456,11 +470,16 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Coordinator", b =>
+                {
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Group", b =>
                 {
                     b.Navigation("project");
 
-                    b.Navigation("Students");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Supervisor", b =>

@@ -28,14 +28,16 @@ namespace Academic_project_manager_WebAPI.Models
                 new { Id = "3", Name = "Student", NormailzedName = "STUDENT" },
                 new { Id = "4", Name = "Supervisor", NormailzedName = "SUPERVISOR" }
                 );
-            builder.Entity<Group>().HasMany(g => g.Students)
-                .WithOne(s => s.group).HasForeignKey(s => s.groupId);
+            builder.Entity<Group>().HasMany(g => g.Student)
+                .WithOne(s => s.Group).HasForeignKey(s => s.GroupId);
             builder.Entity<Group>().HasOne(a => a.project)
-                .WithOne(b => b.Group).HasForeignKey<project>(b => b.projectRef);
+                .WithOne(b => b.Group).HasForeignKey<project>(b => b.groupId);
             builder.Entity<Supervisor>().HasMany(a => a.Groups)
                 .WithOne(s => s.Supervisor).HasForeignKey(s => s.supervisorId);
             builder.Entity<Supervisor>().HasOne(a => a.coordinator)
                 .WithOne(s => s.Supervisor).HasForeignKey<Coordinator>(a => a.supervisorId);
+            builder.Entity<Coordinator>().HasMany(g => g.Student)
+                .WithOne(c => c.Coordinator).HasForeignKey(s => s.coordinatorId);
         }  
         
     }
