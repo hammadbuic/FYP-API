@@ -119,7 +119,11 @@ namespace Academic_project_manager_WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            var @students = await _context.students.Where(s => s.GroupId == id).ToListAsync();
+            foreach(var student in students)
+            {
+                student.GroupId = null;
+            }
             _context.groups.Remove(@group);
             await _context.SaveChangesAsync();
 
@@ -142,7 +146,29 @@ namespace Academic_project_manager_WebAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-        //Assign Students to group
+        //Update students by group
+        [HttpPut("[action]/{id}")]
+        public async Task<ActionResult> updateStudentsByGroupId([FromRoute]int id,[FromBody]StudentGroupAssignDTO[] students)
+        {
+            var studentGroup = await _context.students.Where(s => s.GroupId == id).ToListAsync();
+            foreach(var student in studentGroup)
+            {
+                student.GroupId = null;
+            }
+            foreach(var student in students) 
+            {
+                var stu = _context.students.First(s => s.Id == student.id);
+                if (stu == null)
+                {
+                    return NotFound();
+                }
+                stu.GroupId = student.groupId;
+                _context.Entry(stu).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        //Return Students by group
         [HttpGet("[action]/{id}")]
         public async Task<ActionResult<IEnumerable<StudentModel>>> getStudentsByGroup(int id)
         {
