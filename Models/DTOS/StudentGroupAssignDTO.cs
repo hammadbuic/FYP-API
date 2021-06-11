@@ -9,5 +9,6 @@ namespace Academic_project_manager_WebAPI.Models.DTOS
     {
         public string id { get; set; }
         public int groupId { get; set; }
+        public string coordinatorId { get; set; }
     }
 }

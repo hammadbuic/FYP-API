@@ -118,19 +118,30 @@ namespace Academic_project_manager_WebAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+            //deleting from coordinator table if present
+            var findCoordinator = _db.Coordinators.FirstOrDefault(p => p.supervisorId == id);
+            if (findCoordinator != null)
+            {
+                var students = _db.students.Where(p => p.coordinatorId == findCoordinator.Id).ToList();
+                if (students != null)
+                {
+                    foreach (var student in students)
+                    {
+                        if (student.coordinatorId != null)
+                        {
+                            student.coordinatorId = null;
+                        }
+                    }
+                }
+                _db.Coordinators.Remove(findCoordinator);
+            }
+                //await _db.SaveChangesAsync();
             var findSupervisor = _db.supervisors.FirstOrDefault(p => p.Id == id);
             if (findSupervisor == null)
             {
                 return NotFound();
             }
             _db.supervisors.Remove(findSupervisor);
-            //deleting from coordinator table if present
-            var findCoordinator = _db.Coordinators.FirstOrDefault(p => p.supervisorId == id);
-            if (findCoordinator != null)
-            {
-                _db.Coordinators.Remove(findCoordinator);
-
-            }
             await _db.SaveChangesAsync();
             return Ok(new JsonResult("Supervisor with id: " + id + "is Deleted"));
         }
@@ -143,7 +154,16 @@ namespace Academic_project_manager_WebAPI.Controllers
             var newCoordinator = new Coordinator
             {
                 section = coordinator.section,
-                supervisorId=coordinator.supervisorId
+                supervisorId=coordinator.supervisorId,
+                gitId=coordinator.gitId,
+                web_url=coordinator.web_url,
+                groupName=coordinator.groupName,
+                groupPath=coordinator.groupPath,
+                description=coordinator.description,
+                created_at=coordinator.created_at,
+                reposId=coordinator.reposId,
+                reposName=coordinator.reposName,
+                reposUrl=coordinator.reposUrl
             };
             var findSupervisor = _db.Users.FirstOrDefault(p => p.Id == coordinator.supervisorId);
             await _db.Coordinators.AddAsync(newCoordinator);

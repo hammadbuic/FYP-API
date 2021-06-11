@@ -30,6 +30,7 @@ namespace Academic_project_manager_WebAPI.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             return new
             {
+                user.Id,
                 user.fullName,
                 user.UserName,
                 user.Email,

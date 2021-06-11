@@ -102,6 +102,9 @@ namespace Academic_project_manager_WebAPI.Controllers
             {
                 groupName = groupDTOS.groupName,
                 supervisorId = groupDTOS.supervisorId,
+                gitProjectId=groupDTOS.gitProjectId,
+                created_at=groupDTOS.created_at,
+                http_url_to_repo=groupDTOS.http_url_to_repo,
                 project = new project() { projectName = groupDTOS.projectName, projectDescription = groupDTOS.projectDescription }
             };
             _context.groups.Add(group);
@@ -133,7 +136,9 @@ namespace Academic_project_manager_WebAPI.Controllers
         [HttpPut("[action]")]
         public async Task<ActionResult> AssignStudent([FromBody]StudentGroupAssignDTO[] students)
         {
-            foreach(var student in students)
+            var coordinatorId = User.Claims.First(c => c.Type == "UserID").Value;
+            var coordinator = _context.Coordinators.First(c => c.supervisorId == coordinatorId);
+            foreach (var student in students)
             {
                 var stu = _context.students.First(s => s.Id == student.id);
                 if(stu==null)
@@ -141,6 +146,7 @@ namespace Academic_project_manager_WebAPI.Controllers
                     return NotFound();
                 }
                 stu.GroupId = student.groupId;
+                stu.coordinatorId = coordinator.Id;
                 _context.Entry(stu).State = EntityState.Modified;
             }
             await _context.SaveChangesAsync();
@@ -187,7 +193,10 @@ namespace Academic_project_manager_WebAPI.Controllers
                 supervisorId = group.supervisorId,
                 projectId = group.project.projectId,
                 projectName = group.project.projectName,
-                projectDescription = group.project.projectDescription
+                projectDescription = group.project.projectDescription,
+                gitProjectId=group.gitProjectId,
+                created_at=group.created_at,
+                http_url_to_repo=group.http_url_to_repo
             };
         private static GroupDTOS1 GroupToDTOS1(Group group) =>
            new GroupDTOS1
@@ -198,7 +207,10 @@ namespace Academic_project_manager_WebAPI.Controllers
                username=group.Supervisor.UserName,
                projectId = group.project.projectId,
                projectName = group.project.projectName,
-               projectDescription = group.project.projectDescription
+               projectDescription = group.project.projectDescription,
+               gitProjectId = group.gitProjectId,
+               created_at = group.created_at,
+               http_url_to_repo = group.http_url_to_repo
            };
     }
 }

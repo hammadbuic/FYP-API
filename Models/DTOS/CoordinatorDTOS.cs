@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace Academic_project_manager_WebAPI.Models
+namespace Academic_project_manager_WebAPI.Models.DTOS
 {
-    [Table("Coordinator")]
-    public class Coordinator
+    public class CoordinatorDTOS
     {
         public int Id { get; set; }
         public string section { get; set; }
@@ -23,7 +19,5 @@ namespace Academic_project_manager_WebAPI.Models
         public string reposName { get; set; }
         public int reposId { get; set; }
         public string reposUrl { get; set; }
-        public Supervisor Supervisor { get; set; }
-        public virtual ICollection<StudentModel> Student { get; set; }
     }
 }

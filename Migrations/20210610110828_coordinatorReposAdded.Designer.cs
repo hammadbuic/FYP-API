@@ -4,14 +4,16 @@ using Academic_project_manager_WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Academic_project_manager_WebAPI.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    partial class AuthenticationContextModelSnapshot : ModelSnapshot
+    [Migration("20210610110828_coordinatorReposAdded")]
+    partial class coordinatorReposAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,16 +160,7 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("gitProjectId")
-                        .HasColumnType("int");
-
                     b.Property<string>("groupName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("http_url_to_repo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("supervisorId")

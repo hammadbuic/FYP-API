@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Academic_project_manager_WebAPI.Models.DTOS;
 namespace Academic_project_manager_WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -37,15 +37,35 @@ namespace Academic_project_manager_WebAPI.Controllers
             var students = await _db.students.ToListAsync();
             return Ok(students);
         }
-        ////insert group
-        //[HttpPost("[action]")]
-        //[Authorize(Roles ="Coordinator")]
-        //public async Task<Object> insertProject([FromBody] project project)
-        //{
-        //    var newProject=new project()
-        //    {
-        //        projectName=project.projectName,
-        //    }
-        //}
+        // GET: api/Groups/5
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<ActionResult<CoordinatorDTOS>> GetCoordinator()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var coordinator = await _db.Coordinators.Where(c => c.supervisorId == userId).FirstOrDefaultAsync();
+
+            if (coordinator == null)
+            {
+                return NotFound();
+            }
+            return CoordinatorToDTOS(coordinator);
+        }
+         private static CoordinatorDTOS CoordinatorToDTOS(Coordinator coordinator) =>
+           new CoordinatorDTOS
+           {
+               Id = coordinator.Id,
+               section = coordinator.section,
+               supervisorId = coordinator.supervisorId,
+               gitId = coordinator.gitId,
+               web_url = coordinator.web_url,
+               groupName = coordinator.groupName,
+               groupPath = coordinator.groupPath,
+               description= coordinator.description,
+               created_at= coordinator.created_at,
+               reposName= coordinator.reposName,
+               reposId= coordinator.reposId,
+               reposUrl=coordinator.reposUrl
+           };
     }
 }
