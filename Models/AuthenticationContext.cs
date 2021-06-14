@@ -29,6 +29,10 @@ namespace Academic_project_manager_WebAPI.Models
                 new { Id = "3", Name = "Student", NormalizedName = "STUDENT" },
                 new { Id = "4", Name = "Supervisor", NormalizedName = "SUPERVISOR" }
                 );
+            builder.Entity<Group>().HasOne(g => g.FileUpload)
+                .WithOne(f => f.Group).HasForeignKey<StudentFileUpload>(s => s.groupId);
+            builder.Entity<Activities>().HasOne(g => g.StudentFileUpload)
+                .WithOne(f => f.Activities).HasForeignKey<StudentFileUpload>(s => s.activitiesId);
             builder.Entity<Group>().HasMany(g => g.Student)
                 .WithOne(s => s.Group).HasForeignKey(s => s.GroupId);
             builder.Entity<Group>().HasOne(a => a.project)

@@ -20,5 +20,6 @@ namespace Academic_project_manager_WebAPI.Models
         public virtual Supervisor Supervisor { get; set; }
         public Coordinator Coordinator { get; set; }
         public  virtual ICollection<StudentModel> Student { get; set; }
+        public StudentFileUpload FileUpload { get; set; }
     }
 }

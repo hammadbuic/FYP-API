@@ -18,5 +18,6 @@ namespace Academic_project_manager_WebAPI.Models
         public string branch { get; set; }
         public int? coordinatorId { get; set; }
         public Coordinator Coordinator { get; set; }
+        public StudentFileUpload StudentFileUpload { get; set; }
     }
 }

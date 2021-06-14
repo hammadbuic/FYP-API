@@ -162,4 +162,3 @@ C:\Users\hamma\OneDrive\Desktop\FYP\Application\Academic-project-manager-WebAPI\
 C:\Users\hamma\OneDrive\Desktop\FYP\Application\Academic-project-manager-WebAPI\obj\Debug\netcoreapp3.1\Academic-project-manager-WebAPI.dll
 C:\Users\hamma\OneDrive\Desktop\FYP\Application\Academic-project-manager-WebAPI\obj\Debug\netcoreapp3.1\Academic-project-manager-WebAPI.pdb
 C:\Users\hamma\OneDrive\Desktop\FYP\Application\Academic-project-manager-WebAPI\obj\Debug\netcoreapp3.1\Academic-project-manager-WebAPI.genruntimeconfig.cache
-C:\Users\hamma\OneDrive\Desktop\FYP\Application\Academic-project-manager-WebAPI\obj\Debug\netcoreapp3.1\Academic-project-manager-WebAPI.csprojAssemblyReference.cache
