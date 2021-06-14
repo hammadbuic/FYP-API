@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Academic_project_manager_WebAPI.Models;
 
 namespace Academic_project_manager_WebAPI.Models
 {
@@ -23,10 +24,10 @@ namespace Academic_project_manager_WebAPI.Models
         {
             base.OnModelCreating(builder);
             builder.Entity<IdentityRole>().HasData(
-                new { Id="1",Name="Admin",NormailzedName="ADMIN"},
-                new { Id = "2", Name = "Coordinator", NormailzedName = "COORDINATOR" },
-                new { Id = "3", Name = "Student", NormailzedName = "STUDENT" },
-                new { Id = "4", Name = "Supervisor", NormailzedName = "SUPERVISOR" }
+                new { Id="1",Name="Admin",NormalizedName="ADMIN"},
+                new { Id = "2", Name = "Coordinator", NormalizedName = "COORDINATOR" },
+                new { Id = "3", Name = "Student", NormalizedName = "STUDENT" },
+                new { Id = "4", Name = "Supervisor", NormalizedName = "SUPERVISOR" }
                 );
             builder.Entity<Group>().HasMany(g => g.Student)
                 .WithOne(s => s.Group).HasForeignKey(s => s.GroupId);
@@ -38,7 +39,16 @@ namespace Academic_project_manager_WebAPI.Models
                 .WithOne(s => s.Supervisor).HasForeignKey<Coordinator>(a => a.supervisorId);
             builder.Entity<Coordinator>().HasMany(g => g.Student)
                 .WithOne(c => c.Coordinator).HasForeignKey(s => s.coordinatorId);
+            builder.HasSequence<int>("sequence", schema: "activity").
+                StartsAt(0).IncrementsBy(1);
+            builder.Entity<Activities>()
+                .Property(p => p.Id).HasDefaultValueSql("NEXT VAlUE FOR activity.sequence");
+            builder.Entity<Coordinator>().HasMany(c => c.Activities)
+                .WithOne(c => c.Coordinator).HasForeignKey(s => s.coordinatorId);
+            builder.Entity<Coordinator>().HasMany(c => c.Groups)
+                .WithOne(c => c.Coordinator).HasForeignKey(s => s.coordinatorId);
         }  
+        public DbSet<Academic_project_manager_WebAPI.Models.Activities> Activities { get; set; }
         
     }
 }

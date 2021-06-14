@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Academic_project_manager_WebAPI.Models;
 using Academic_project_manager_WebAPI.Models.DTOS;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Academic_project_manager_WebAPI.Controllers
 {
@@ -34,7 +35,9 @@ namespace Academic_project_manager_WebAPI.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<GroupDTOS1>>> Getgroups()
         {
-            return await (_context.groups.
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var coordinator= await _context.Coordinators.Where(c => c.supervisorId == userId).FirstOrDefaultAsync();
+            return await (_context.groups.Where(g=>g.coordinatorId==coordinator.Id).
                 Include(g => g.project)).Include(s=>s.Supervisor)
                 .Select(x=>GroupToDTOS1(x))
                 .ToListAsync();
@@ -51,7 +54,37 @@ namespace Academic_project_manager_WebAPI.Controllers
             }
             return GroupToDTOS1(@group);
         }
+        //groups/getgroupsbysupervisor
+        [HttpGet("[action]")]
+        [Authorize(Roles ="Supervisor,Coordinator")]
+        public async Task<ActionResult<IEnumerable<GroupDTOS1>>> GetGroupsBySupervisor()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var @group = await _context.groups.Where(g => g.supervisorId == userId).
+                Include(p => p.project).Include(s => s.Supervisor).Select(x => GroupToDTOS1(x)).ToListAsync();
 
+            if (@group == null)
+            {
+                return NotFound();
+            }
+            return @group;
+        }
+        //groups/getgroupsbysupervisor
+        [HttpGet("[action]")]
+        [Authorize(Roles = "Student,Supervisor,Coordinator")]
+        public async Task<ActionResult<GroupDTOS1>> GetGroupsByStudent()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var @student = await _context.students.Where(s => s.Id == userId).FirstOrDefaultAsync();
+            var @group = await _context.groups.Where(g => g.groupId == student.GroupId).
+                Include(p => p.project).Include(s => s.Supervisor).Select(x => GroupToDTOS1(x)).FirstOrDefaultAsync();
+
+            if (@group == null)
+            {
+                return NotFound();
+            }
+            return @group;
+        }
         // PUT: api/Groups/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -96,8 +129,11 @@ namespace Academic_project_manager_WebAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost("[action]")]
+        [Authorize(Roles ="Coordinator")]
         public async Task<ActionResult<GroupDTOS>> PostGroup(GroupDTOS groupDTOS)
         {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var coordinator = await _context.Coordinators.Where(c => c.supervisorId == userId).FirstOrDefaultAsync();
             var group = new Group()
             {
                 groupName = groupDTOS.groupName,
@@ -105,6 +141,7 @@ namespace Academic_project_manager_WebAPI.Controllers
                 gitProjectId=groupDTOS.gitProjectId,
                 created_at=groupDTOS.created_at,
                 http_url_to_repo=groupDTOS.http_url_to_repo,
+                coordinatorId=coordinator.Id,
                 project = new project() { projectName = groupDTOS.projectName, projectDescription = groupDTOS.projectDescription }
             };
             _context.groups.Add(group);

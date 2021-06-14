@@ -16,7 +16,9 @@ namespace Academic_project_manager_WebAPI.Models
         public int gitProjectId { get; set; }
         public DateTime created_at { get; set; }
         public string http_url_to_repo { get; set; }
+        public int? coordinatorId { get; set; }
         public virtual Supervisor Supervisor { get; set; }
+        public Coordinator Coordinator { get; set; }
         public  virtual ICollection<StudentModel> Student { get; set; }
     }
 }

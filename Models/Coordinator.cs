@@ -24,6 +24,8 @@ namespace Academic_project_manager_WebAPI.Models
         public int reposId { get; set; }
         public string reposUrl { get; set; }
         public Supervisor Supervisor { get; set; }
+        public virtual ICollection<Group> Groups {get;set;}
         public virtual ICollection<StudentModel> Student { get; set; }
+        public virtual ICollection<Activities> Activities { get; set; }
     }
 }

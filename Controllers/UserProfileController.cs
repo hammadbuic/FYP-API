@@ -37,6 +37,15 @@ namespace Academic_project_manager_WebAPI.Controllers
                 user.PhoneNumber,
             };
         }
+        [HttpGet("[action]")]
+        [Authorize]
+        // GET: api/UserProfile
+        public async Task<Object> GetUserDataForProfile()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            return user;
+        }
 
         [HttpGet]
         [Authorize(Roles="Admin")]

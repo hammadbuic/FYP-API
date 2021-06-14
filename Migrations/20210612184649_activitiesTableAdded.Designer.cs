@@ -4,14 +4,16 @@ using Academic_project_manager_WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Academic_project_manager_WebAPI.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    partial class AuthenticationContextModelSnapshot : ModelSnapshot
+    [Migration("20210612184649_activitiesTableAdded")]
+    partial class activitiesTableAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,9 +198,6 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("coordinatorId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
@@ -215,8 +214,6 @@ namespace Academic_project_manager_WebAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("groupId");
-
-                    b.HasIndex("coordinatorId");
 
                     b.HasIndex("supervisorId");
 
@@ -463,15 +460,9 @@ namespace Academic_project_manager_WebAPI.Migrations
 
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Group", b =>
                 {
-                    b.HasOne("Academic_project_manager_WebAPI.Models.Coordinator", "Coordinator")
-                        .WithMany("Groups")
-                        .HasForeignKey("coordinatorId");
-
                     b.HasOne("Academic_project_manager_WebAPI.Models.Supervisor", "Supervisor")
                         .WithMany("Groups")
                         .HasForeignKey("supervisorId");
-
-                    b.Navigation("Coordinator");
 
                     b.Navigation("Supervisor");
                 });
@@ -571,8 +562,6 @@ namespace Academic_project_manager_WebAPI.Migrations
             modelBuilder.Entity("Academic_project_manager_WebAPI.Models.Coordinator", b =>
                 {
                     b.Navigation("Activities");
-
-                    b.Navigation("Groups");
 
                     b.Navigation("Student");
                 });
